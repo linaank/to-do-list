@@ -22,5 +22,76 @@ function loadStyles() {
 
     document.head.append(viewport, font, css);
 }
+function createSelect(options) {
+    const select = el('select', 'input');
+    options.forEach(([value, label]) => {
+        const option = el('option', '', label);
+        option.value = value;
+        select.append(option);
+    });
+    return select;
+}
+
+function buildLayout() {
+    const header = el('header', 'header');
+    els.logo = el('div', 'logo');
+    const heading = el('div', 'heading');
+    heading.append(
+        el('h1', 'title', 'To-Do лист'),
+        el('p', 'subtitle', 'задачи под кошачьим присмотром')
+    );
+    header.append(els.logo, heading);
+
+    const main = el('main', 'main');
+
+    // Форма добавления
+    els.form = el('form', 'form');
+    els.titleInput = el('input', 'input');
+    els.titleInput.type = 'text';
+    els.titleInput.placeholder = 'Что нужно сделать?';
+    els.titleInput.required = true;
+    els.titleInput.maxLength = 80;
+    els.titleInput.setAttribute('aria-label', 'Название задачи');
+
+    els.dateInput = el('input', 'input');
+    els.dateInput.type = 'date';
+    els.dateInput.setAttribute('aria-label', 'Дата задачи');
+
+    const addBtn = el('button', 'btn btn-primary', 'Добавить');
+    addBtn.type = 'submit';
+    els.form.append(els.titleInput, els.dateInput, addBtn);
+
+    // Панель поиска, фильтра, сортировки
+    const toolbar = el('section', 'toolbar');
+    els.searchInput = el('input', 'input');
+    els.searchInput.type = 'search';
+    els.searchInput.placeholder = 'Поиск по названию';
+    els.searchInput.setAttribute('aria-label', 'Поиск по названию');
+
+    els.filterSelect = createSelect([
+        ['all', 'Все'],
+        ['active', 'Не выполнены'],
+        ['done', 'Выполнены'],
+    ]);
+    els.sortSelect = createSelect([
+        ['manual', 'Мой порядок'],
+        ['asc', 'Дата: сначала старые'],
+        ['desc', 'Дата: сначала новые'],
+    ]);
+    toolbar.append(els.searchInput, els.filterSelect, els.sortSelect);
+
+    els.counter = el('p', 'counter');
+    els.list = el('ul', 'task-list');
+    els.empty = el('p', 'empty');
+
+    main.append(els.form, toolbar, els.counter, els.list, els.empty);
+
+    const footer = el('footer', 'footer', '=^.^= с любовью к пушистым');
+
+    const app = el('div', 'app');
+    app.append(header, main, footer);
+    document.body.append(app);
+}
 
 loadStyles();
+buildLayout();
