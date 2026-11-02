@@ -67,3 +67,8 @@ body {
 .btn-danger { background: var(--red); }
 
 .footer { margin-top: 24px; text-align: center; font-size: 10px; }
+
+.cat { width: 100%; height: 100%; shape-rendering: crispEdges; }
+.cat-body { fill: var(--orange); }
+.cat-eye { fill: var(--ink); }
+.cat-nose { fill: var(--pink); }

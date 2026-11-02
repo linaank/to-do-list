@@ -92,6 +92,42 @@ function buildLayout() {
     app.append(header, main, footer);
     document.body.append(app);
 }
+const CAT_PIXELS = [
+    '#..........#',
+    '##........##',
+    '############',
+    '############',
+    '##ee####ee##',
+    '##ee####ee##',
+    '############',
+    '#####pp#####',
+    '############',
+    '.##########.',
+    '..########..',
+];
+const CAT_CLASSES = { '#': 'cat-body', e: 'cat-eye', p: 'cat-nose' };
 
+function createCat() {
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', `0 0 ${CAT_PIXELS[0].length} ${CAT_PIXELS.length}`);
+    svg.setAttribute('class', 'cat');
+    svg.setAttribute('aria-hidden', 'true');
+
+    CAT_PIXELS.forEach((row, y) => {
+        [...row].forEach((ch, x) => {
+            if (ch === '.') return;
+            const rect = document.createElementNS(NS, 'rect');
+            rect.setAttribute('x', x);
+            rect.setAttribute('y', y);
+            rect.setAttribute('width', 1);
+            rect.setAttribute('height', 1);
+            rect.setAttribute('class', CAT_CLASSES[ch]);
+            svg.append(rect);
+        });
+    });
+    return svg;
+}
 loadStyles();
 buildLayout();
+els.logo.append(createCat());
