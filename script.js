@@ -152,6 +152,13 @@ function deleteTask(id) {
     update();
 }
 
+function toggleTask(id) {
+    const task = tasks.find((t) => t.id === id);
+    if (!task) return;
+    task.done = !task.done;
+    update();
+}
+
 function getVisibleTasks() {
     let list = [...tasks];
     return list;
@@ -174,6 +181,13 @@ function createTaskElement(task) {
     delBtn.type = 'button';
     delBtn.addEventListener('click', () => deleteTask(task.id));
     actions.append(delBtn);
+    li.classList.toggle('done', task.done);
+    const check = el('button', 'check');
+    check.type = 'button';
+    check.setAttribute('aria-pressed', String(task.done));
+    check.setAttribute('aria-label', 'Отметить выполненной');
+    check.addEventListener('click', () => toggleTask(task.id));
+    li.prepend(check);
     return li;
 }
 

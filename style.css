@@ -89,3 +89,36 @@ body {
 .task-title { overflow-wrap: anywhere; }
 .task-date { font-size: 9px; opacity: 0.7; }
 .task-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.check {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    padding: 0;
+    border: 4px solid var(--ink);
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+}
+.task.done { background: #e8fbf2; }
+.task.done .check { background: var(--mint); }
+.task.done .check::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 3px;
+    height: 3px;
+    margin: -9px 0 0 -10px;
+    background: transparent;
+    box-shadow:
+            18px 0 var(--ink),
+            15px 3px var(--ink), 18px 3px var(--ink),
+            0 6px var(--ink), 12px 6px var(--ink), 15px 6px var(--ink),
+            0 9px var(--ink), 3px 9px var(--ink), 9px 9px var(--ink), 12px 9px var(--ink),
+            3px 12px var(--ink), 6px 12px var(--ink), 9px 12px var(--ink),
+            6px 15px var(--ink);
+}
+.task.done .task-title { text-decoration: line-through; opacity: 0.6; }
