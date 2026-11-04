@@ -1,4 +1,8 @@
 const els = {};
+let tasks = [];
+const view = { filter: 'all', sort: 'manual', search: '' };
+let editingId = null;
+let dragId = null;
 
 function el(tag, className = '', text = '') {
     const node = document.createElement(tag);
@@ -128,6 +132,72 @@ function createCat() {
     });
     return svg;
 }
+function formatDate(value) {
+    if (!value) return 'без даты';
+    const [y, m, d] = value.split('-');
+    return `${d}.${m}.${y}`;
+}
+
+function addTask(title, date) {
+    tasks.push({
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        title,
+        date,
+        done: false,
+    });
+}
+
+function getVisibleTasks() {
+    let list = [...tasks];
+    return list;
+}
+
+function createTaskElement(task) {
+    const li = el('li', 'task');
+    li.dataset.id = task.id;
+
+    const body = el('div', 'task-body');
+    const title = el('span', 'task-title', task.title);
+    const date = el('time', 'task-date', formatDate(task.date));
+    if (task.date) date.dateTime = task.date;
+    body.append(title, date);
+
+    const actions = el('div', 'task-actions');
+
+    li.append(body, actions);
+    return li;
+}
+
+function render() {
+    const visible = getVisibleTasks();
+    els.list.replaceChildren(...visible.map(createTaskElement));
+
+    els.empty.hidden = visible.length > 0;
+    els.empty.textContent = tasks.length
+        ? 'Ничего не найдено =^.^='
+        : 'Задач пока нет. Котик скучает =^-.-^=';
+
+    const doneCount = tasks.filter((t) => t.done).length;
+    els.counter.textContent = `Выполнено: ${doneCount} из ${tasks.length}`;
+}
+
+function update() {
+    render();
+}
+
+function bindEvents() {
+    els.form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = els.titleInput.value.trim();
+        if (!title) return;
+        addTask(title, els.dateInput.value);
+        els.form.reset();
+        els.titleInput.focus();
+        update();
+    });
+}
 loadStyles();
 buildLayout();
 els.logo.append(createCat());
+bindEvents();
+render();
