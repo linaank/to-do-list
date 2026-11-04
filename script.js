@@ -147,6 +147,11 @@ function addTask(title, date) {
     });
 }
 
+function deleteTask(id) {
+    tasks = tasks.filter((t) => t.id !== id);
+    update();
+}
+
 function getVisibleTasks() {
     let list = [...tasks];
     return list;
@@ -165,6 +170,10 @@ function createTaskElement(task) {
     const actions = el('div', 'task-actions');
 
     li.append(body, actions);
+    const delBtn = el('button', 'btn btn-danger', 'Удалить');
+    delBtn.type = 'button';
+    delBtn.addEventListener('click', () => deleteTask(task.id));
+    actions.append(delBtn);
     return li;
 }
 
