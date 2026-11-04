@@ -164,9 +164,51 @@ function getVisibleTasks() {
     return list;
 }
 
+function createEditForm(task) {
+    const li = el('li', 'task editing');
+    li.dataset.id = task.id;
+
+    const form = el('form', 'edit-form');
+    const titleInput = el('input', 'input');
+    titleInput.type = 'text';
+    titleInput.value = task.title;
+    titleInput.required = true;
+    titleInput.maxLength = 80;
+
+    const dateInput = el('input', 'input');
+    dateInput.type = 'date';
+    dateInput.value = task.date;
+
+    const saveBtn = el('button', 'btn btn-primary', 'Сохранить');
+    saveBtn.type = 'submit';
+    const cancelBtn = el('button', 'btn', 'Отмена');
+    cancelBtn.type = 'button';
+
+    form.append(titleInput, dateInput, saveBtn, cancelBtn);
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = titleInput.value.trim();
+        if (!title) return;
+        task.title = title;
+        task.date = dateInput.value;
+        editingId = null;
+        update();
+    });
+    cancelBtn.addEventListener('click', () => {
+        editingId = null;
+        render();
+    });
+
+    li.append(form);
+    setTimeout(() => titleInput.focus());
+    return li;
+}
+
 function createTaskElement(task) {
     const li = el('li', 'task');
     li.dataset.id = task.id;
+    if (task.id === editingId) return createEditForm(task);
 
     const body = el('div', 'task-body');
     const title = el('span', 'task-title', task.title);
@@ -188,6 +230,13 @@ function createTaskElement(task) {
     check.setAttribute('aria-label', 'Отметить выполненной');
     check.addEventListener('click', () => toggleTask(task.id));
     li.prepend(check);
+    const editBtn = el('button', 'btn', 'Править');
+    editBtn.type = 'button';
+    editBtn.addEventListener('click', () => {
+        editingId = task.id;
+        render();
+    });
+    actions.prepend(editBtn);
     return li;
 }
 

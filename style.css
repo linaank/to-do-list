@@ -122,3 +122,5 @@ body {
             6px 15px var(--ink);
 }
 .task.done .task-title { text-decoration: line-through; opacity: 0.6; }
+.edit-form { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; }
+.edit-form .input:first-child { flex: 1 1 200px; }
