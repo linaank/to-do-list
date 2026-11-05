@@ -124,3 +124,19 @@ body {
 .task.done .task-title { text-decoration: line-through; opacity: 0.6; }
 .edit-form { display: flex; flex-wrap: wrap; gap: 8px; width: 100%; }
 .edit-form .input:first-child { flex: 1 1 200px; }
+
+.hint { margin: 0 0 12px; font-size: 9px; }
+.task[draggable="true"] { cursor: grab; }
+.task.dragging { opacity: 0.4; }
+.task.drag-over { border-style: dashed; background: var(--bg); }
+
+@media (max-width: 600px) {
+    body { font-size: 11px; }
+    .title { font-size: 16px; }
+    .logo { width: 48px; height: 48px; }
+    .form .btn, .toolbar .input { flex: 1 1 100%; }
+    .task { flex-wrap: wrap; }
+    .task-body { flex-basis: calc(100% - 50px); }
+    .task-actions { width: 100%; }
+    .task-actions .btn { flex: 1; }
+}

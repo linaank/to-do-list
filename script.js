@@ -49,7 +49,6 @@ function buildLayout() {
 
     const main = el('main', 'main');
 
-    // Форма добавления
     els.form = el('form', 'form');
     els.titleInput = el('input', 'input');
     els.titleInput.type = 'text';
@@ -88,8 +87,9 @@ function buildLayout() {
     els.counter = el('p', 'counter');
     els.list = el('ul', 'task-list');
     els.empty = el('p', 'empty');
+    els.hint = el('p', 'hint', 'Перетаскивай задачи, чтобы менять порядок');
 
-    main.append(els.form, toolbar, els.counter, els.list, els.empty);
+    main.append(els.form, toolbar, els.counter, els.list, els.empty, els.hint);
 
     const footer = el('footer', 'footer', '=^.^= с любовью к пушистым');
 
@@ -243,6 +243,7 @@ function createTaskElement(task) {
         render();
     });
     actions.prepend(editBtn);
+    if (view.sort === 'manual') enableDrag(li, task);
     return li;
 }
 
@@ -257,6 +258,7 @@ function render() {
 
     const doneCount = tasks.filter((t) => t.done).length;
     els.counter.textContent = `Выполнено: ${doneCount} из ${tasks.length}`;
+    els.hint.hidden = view.sort !== 'manual';
 }
 
 function update() {
@@ -304,6 +306,40 @@ function compareDates(a, b, direction) {
     return direction === 'asc'
         ? a.date.localeCompare(b.date)
         : b.date.localeCompare(a.date);
+}
+
+function moveTask(fromId, toId) {
+    const from = tasks.findIndex((t) => t.id === fromId);
+    const to = tasks.findIndex((t) => t.id === toId);
+    if (from < 0 || to < 0 || from === to) return;
+    const [item] = tasks.splice(from, 1);
+    tasks.splice(to, 0, item);
+    update();
+}
+
+function enableDrag(li, task) {
+    li.draggable = true;
+
+    li.addEventListener('dragstart', (e) => {
+        dragId = task.id;
+        li.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', task.id);
+    });
+    li.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        li.classList.add('drag-over');
+    });
+    li.addEventListener('dragleave', () => li.classList.remove('drag-over'));
+    li.addEventListener('drop', (e) => {
+        e.preventDefault();
+        li.classList.remove('drag-over');
+        moveTask(dragId, task.id);
+    });
+    li.addEventListener('dragend', () => {
+        dragId = null;
+        li.classList.remove('dragging');
+    });
 }
 loadStyles();
 buildLayout();
