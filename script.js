@@ -162,6 +162,9 @@ function toggleTask(id) {
 
 function getVisibleTasks() {
     let list = [...tasks];
+    if (view.sort !== 'manual') {
+        list.sort((a, b) => compareDates(a, b, view.sort));
+    }
     return list;
 }
 
@@ -282,6 +285,19 @@ function bindEvents() {
         els.titleInput.focus();
         update();
     });
+    els.sortSelect.addEventListener('change', () => {
+        view.sort = els.sortSelect.value;
+        render();
+    });
+}
+
+function compareDates(a, b, direction) {
+    if (!a.date && !b.date) return 0;
+    if (!a.date) return 1;
+    if (!b.date) return -1;
+    return direction === 'asc'
+        ? a.date.localeCompare(b.date)
+        : b.date.localeCompare(a.date);
 }
 loadStyles();
 buildLayout();
