@@ -162,6 +162,8 @@ function toggleTask(id) {
 
 function getVisibleTasks() {
     let list = [...tasks];
+    if (view.filter === 'done') list = list.filter((t) => t.done);
+    if (view.filter === 'active') list = list.filter((t) => !t.done);
     if (view.sort !== 'manual') {
         list.sort((a, b) => compareDates(a, b, view.sort));
     }
@@ -287,6 +289,10 @@ function bindEvents() {
     });
     els.sortSelect.addEventListener('change', () => {
         view.sort = els.sortSelect.value;
+        render();
+    });
+    els.filterSelect.addEventListener('change', () => {
+        view.filter = els.filterSelect.value;
         render();
     });
 }
