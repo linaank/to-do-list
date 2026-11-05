@@ -3,6 +3,7 @@ let tasks = [];
 const view = { filter: 'all', sort: 'manual', search: '' };
 let editingId = null;
 let dragId = null;
+const STORAGE_KEY = 'cat-todo-tasks';
 
 function el(tag, className = '', text = '') {
     const node = document.createElement(tag);
@@ -254,7 +255,21 @@ function render() {
 }
 
 function update() {
+    saveTasks();
     render();
+}
+
+function saveTasks() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+}
+
+function loadTasks() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+    } catch {
+        return [];
+    }
 }
 
 function bindEvents() {
@@ -272,4 +287,5 @@ loadStyles();
 buildLayout();
 els.logo.append(createCat());
 bindEvents();
+tasks = loadTasks();
 render();
